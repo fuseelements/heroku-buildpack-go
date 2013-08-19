@@ -26,6 +26,16 @@ Given a the following project file layout:
         myapp
           main.go
 
+The `.gitignore` file should ignore items in the workspace `bin` and `pkg`
+directories as well as any embedded VCS directories.
+
+    --- .gitignore ---
+    # Go workspace
+    .bzr/
+    .hg/
+    bin/
+    pkg/
+
 The `.goinstall` file content would contain the project's single package on one line:
 
     --- .goinstall ---
