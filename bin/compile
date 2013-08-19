@@ -40,7 +40,7 @@ PATH=$GOROOT/bin:$PATH
 
 # Install the packages listed in the .goinstall file.
 packages=$(cat $build/.goinstall)
-echo -n "-----> Running: go install -tags heroku $packages"
+echo "-----> Running: go install -tags heroku $packages"
 go install -tags heroku $packages
 
 mkdir -p $build/.profile.d
