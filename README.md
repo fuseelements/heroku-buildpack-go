@@ -20,7 +20,7 @@ Given a the following project file layout:
     .git
     .gitignore
     .goinstall
-    .Procfile
+    Procfile
     go
       src
         myapp
@@ -50,14 +50,15 @@ To deploy the app to heroku:
 
     ...
     -----> Fetching custom git buildpack... done
-    -----> Go app detected
+    -----> Go project app detected
     -----> Installing Go 1.1.2... done
     -----> Running: go install -tags heroku myapp
     -----> Discovering process types
-          Procfile declares types -> web
-    -----> Compiled slug size: 1.0MB
-    -----> Launching... done, v1
-          http://myapp.herokuapp.com deployed to Heroku
+           Procfile declares types -> web
+
+    -----> Compiled slug size: 1.2MB
+    -----> Launching... done, v4
+           http://myapp.herokuapp.com deployed to Heroku
 
 ## Caveats
 
