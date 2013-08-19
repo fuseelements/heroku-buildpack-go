@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+#
+# usage: bin/compile BUILD_DIR CACHE_DIR
+#
+# See https://devcenter.heroku.com/articles/buildpack-api#bin-compile
+#
+set -eo pipefail
+
+mkdir -p "$1" "$2"
+build=$(cd "$1/" && pwd)
+cache=$(cd "$2/" && pwd)
+ver=${GOVERSION:-1.1.2}
+file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
+url=${GOURL:-http://go.googlecode.com/files/$file}
+
+# Check requirements.
+if [ !  -f $build/.goinstall ]; then
+    echo >&2 " !     The required .goinstall file is missing."
+    exit 1
+fi
+
+# Re-use or install the go tools.
+if [ -d $cache/go-$ver/go ]; then
+    echo "-----> Using Go $ver"
+else
+    rm -rf $cache/* # be sure not to build up cruft
+    mkdir -p $cache/go-$ver
+    cd $cache/go-$ver
+    echo -n "-----> Installing Go $ver..."
+    curl -sO $url
+    tar zxf $file
+    rm -f $file
+    echo " done"
+fi
+
+# Setup the Go environment.
+export GOROOT=$cache/go-$ver/go
+export GOPATH=$build/go
+PATH=$GOROOT/bin:$PATH
+
+# Install the packages listed in the .goinstall file.
+packages=$(cat $build/.goinstall)
+echo -n "-----> Running: go install -tags heroku $packages"
+go install -tags heroku $packages
+
+mkdir -p $build/.profile.d
+echo 'PATH=$PATH:$HOME/go/bin' > $build/.profile.d/go.sh
+

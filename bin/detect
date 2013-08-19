@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+#
+# usage: bin/detect BUILD_DIR
+#
+# See https://devcenter.heroku.com/articles/buildpack-api#bin-detect
+#
+
+if [ -d "${1}/go" ]; then
+  echo 'Go project'
+  exit 0
+else
+  exit 1
+fi
+
