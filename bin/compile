@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
 #
-# usage: bin/compile BUILD_DIR CACHE_DIR
+# usage: bin/compile BUILD_DIR CACHE_DIR ENV_DIR
 #
 # See https://devcenter.heroku.com/articles/buildpack-api#bin-compile
 #
-set -eo pipefail
+
+set -e              # fail fast
+set -eo pipefail    # don't ignore exit codes when piping output
 
 mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
-ver=${GOVERSION:-1.1.2}
+
+# If GOVERSION is set, export GOVERSION.
+if [ -d "$3/GOVERSION" ]; then
+    export GOVERSION=$(cat "$3/GOVERSION")
+    echo "-----> Using environment variable GOVERSION=$GOVERSION"
+fi
+
+ver=${GOVERSION:-1.2.0}
 file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
 url=${GOURL:-http://go.googlecode.com/files/$file}
 
@@ -23,7 +32,7 @@ fi
 if [ -d $cache/go-$ver/go ]; then
     echo "-----> Using Go $ver"
 else
-    rm -rf $cache/* # be sure not to build up cruft
+    rm -rf $cache/* # Clean-up prior cache content.
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
     echo -n "-----> Installing Go $ver..."
@@ -45,4 +54,3 @@ go install -tags heroku $packages
 
 mkdir -p $build/.profile.d
 echo 'PATH=$PATH:$HOME/go/bin' > $build/.profile.d/go.sh
-

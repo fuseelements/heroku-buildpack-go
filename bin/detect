@@ -11,4 +11,3 @@ if [ -d "${1}/go" ]; then
 else
   exit 1
 fi
-
