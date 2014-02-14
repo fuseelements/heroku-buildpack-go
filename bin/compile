@@ -8,17 +8,16 @@
 set -e              # fail fast
 set -eo pipefail    # don't ignore exit codes when piping output
 
-mkdir -p "$1" "$2"
-build=$(cd "$1/" && pwd)
-cache=$(cd "$2/" && pwd)
-
-# If GOVERSION is set, export GOVERSION.
-if [ -d "$3/GOVERSION" ]; then
+# If a custom GOVERSION is set, export the GOVERSION value.
+if [ -f "$3/GOVERSION" ]; then
     export GOVERSION=$(cat "$3/GOVERSION")
     echo "-----> Using environment variable GOVERSION=$GOVERSION"
 fi
 
-ver=${GOVERSION:-1.2.0}
+mkdir -p "$1" "$2"
+build=$(cd "$1/" && pwd)
+cache=$(cd "$2/" && pwd)
+ver=${GOVERSION:-1.2}
 file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
 url=${GOURL:-http://go.googlecode.com/files/$file}
 
