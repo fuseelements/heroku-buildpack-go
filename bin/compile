@@ -9,7 +9,7 @@ set -e              # fail fast
 set -eo pipefail    # don't ignore exit codes when piping output
 
 # If a custom GOVERSION is set, export the GOVERSION value.
-if [ -f "$3/GOVERSION" ]; then
+if [ -e "$3/GOVERSION" ]; then
     export GOVERSION=$(cat "$3/GOVERSION")
     echo "-----> Using environment variable GOVERSION=$GOVERSION"
 fi
