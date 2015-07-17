@@ -18,8 +18,9 @@ mkdir -p "$1" "$2"
 build=$(cd "$1/" && pwd)
 cache=$(cd "$2/" && pwd)
 ver=${GOVERSION:-1.2}
+# https://storage.googleapis.com/golang/go1.4.2.linux-amd64.tar.gz
 file=${GOFILE:-go$ver.$(uname|tr A-Z a-z)-amd64.tar.gz}
-url=${GOURL:-http://go.googlecode.com/files/$file}
+url=${GOURL:-http://storage.googleapis.com/golang/$file}
 
 # Check requirements.
 if [ !  -f $build/.goinstall ]; then
@@ -35,6 +36,7 @@ else
     mkdir -p $cache/go-$ver
     cd $cache/go-$ver
     echo -n "-----> Installing Go $ver..."
+    echo "Downloading go from $url"
     curl -sO $url
     tar zxf $file
     rm -f $file
